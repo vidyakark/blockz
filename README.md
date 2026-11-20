@@ -1,5 +1,7 @@
 # blockz
 
+![CI](https://github.com/vidyakark/blockz/actions/workflows/ci.yml/badge.svg)
+
 A multi-threaded file compression tool written from scratch in C++17. It splits a file into blocks,
 compresses them in parallel on every CPU core, and writes a **standard `.gz` file** that `gzip`, `zcat`,
 Python and any other gzip tool can read. The DEFLATE compressor (LZ77 + Huffman coding) and the
