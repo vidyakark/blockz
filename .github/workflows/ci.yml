@@ -1,0 +1,25 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: make -j2
+      - name: Unit tests + gzip interoperability tests
+        run: make test
+  sanitizers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: AddressSanitizer + UBSan
+        run: |
+          SRC="src/crc32.cpp src/huffman.cpp src/deflate_enc.cpp src/inflate.cpp src/gzip.cpp tests/test_main.cpp"
+          g++ -std=c++17 -O1 -g -fsanitize=address,undefined -Iinclude $SRC -o t_asan -pthread
+          ./t_asan
+      - name: ThreadSanitizer
+        run: |
+          SRC="src/crc32.cpp src/huffman.cpp src/deflate_enc.cpp src/inflate.cpp src/gzip.cpp tests/test_main.cpp"
+          g++ -std=c++17 -O1 -g -fsanitize=thread -Iinclude $SRC -o t_tsan -pthread
+          ./t_tsan
